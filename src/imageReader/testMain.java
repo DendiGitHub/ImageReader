@@ -9,9 +9,10 @@ import PDollar.*;
 public class testMain {
 	public static void main(String[] args) {
 
-		
+		long a = System.currentTimeMillis();
 		 File file = new File("testDemo\\");
 		batchTest(file);
+		System.out.println("Time : "+(System.currentTimeMillis()-a));
 		
 //		File testFile = new File("testDemo\\XYtest.png");
 //		WorkedImage a = new WorkedImage(testFile);
