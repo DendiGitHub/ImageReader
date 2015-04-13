@@ -7,6 +7,8 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
+import PDollar.Point;
+
 /*	Author :Dendi
  * 	Email  :CoderDendi@163.com
  * 	Data   :2015.01.23
@@ -15,8 +17,8 @@ import javax.imageio.ImageIO;
 public class ImageWorker {
 
 	// to be determined;
-	static int STANDARD_HEIGHT = 50;
-	static int STANDARD_WIDTH = 50;
+	// static int STANDARD_HEIGHT = 50;
+	// static int STANDARD_WIDTH = 50;
 	static int BLUE_WEIGH = 29;
 	static int GREEN_WEIGH = 77;
 	static int RED_WEIGH = 150;
@@ -45,56 +47,149 @@ public class ImageWorker {
 			height = bufferImage.getHeight();
 			grayTable = initGrayTable();
 			binaryTable = initBinaryTable();
-//			bufferImage = binary();
-//			grayTable = initGrayTable();
-//			modifyBinaryTable();
+			catchImage();
+
+			// bufferImage = binary();
+			// grayTable = initGrayTable();
+			// modifyBinaryTable();
 			// getStandard();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
-	public void modifyBinaryTable(){
-		binaryTable = new boolean[width][height];
-		int threshold = getThreshold(grayTable);
 
-		// init
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				if (grayTable[i][j] > threshold) {
-					binaryTable[i][j] = true;
-					// grayTable[i][j] |= 0x00FFFF;
+	private void catchImage() {
+		int flagX = width / 2;
+		int flagY = height / 2;
+		int flagWidth = 1;
+		int flagHeight = 1;
+
+		boolean doubleFlag = false;
+		boolean whileFlag = true;
+		boolean isEmptyFlag = true;
+		while (whileFlag) {
+			whileFlag = false;
+			if (flagY > 0
+					&& getNumOfWhiteBlock(flagX, flagY, flagWidth, true) > 0) {
+				flagY--;
+				flagHeight++;
+				whileFlag = true;
+			}
+			if (flagX + flagHeight < height - 1
+					&& getNumOfWhiteBlock(flagX, flagY + flagHeight, flagWidth,
+							true) > 0) {
+				flagHeight++;
+				whileFlag = true;
+			}
+			if (flagX > 0
+					&& getNumOfWhiteBlock(flagX, flagY, flagHeight, false) > 0) {
+				flagX--;
+				flagWidth++;
+				whileFlag = true;
+			}
+			if (flagY + flagWidth < width - 1
+					&& getNumOfWhiteBlock(flagX + flagWidth, flagY, flagHeight,
+							false) > 0) {
+				flagWidth++;
+				whileFlag = true;
+			}
+			// do none of the above
+			if (whileFlag==false) {
+				if (isEmptyFlag==true) {
+					flagWidth += 2;
+					flagHeight += 2;
+					flagX--;
+					flagY--;
+					whileFlag = true;
+					continue;
+				} else if (doubleFlag==false) {
+					doubleFlag = true;
+					whileFlag = true;
 				} else {
-					binaryTable[i][j] = false;
-					// grayTable[i][j] &= 0xFF0000;
+					break;
 				}
+			} else {
+				isEmptyFlag = false;
+				doubleFlag = false;
 			}
 		}
-	}
-	public void getStandard() {
-		ImageResizer a = new ImageResizer(grayTable, height, width,
-				STANDARD_HEIGHT, STANDARD_WIDTH);
-		grayTable = a.getImageResizer();
-		height = STANDARD_HEIGHT;
-		width = STANDARD_WIDTH;
 
-		binaryTable = new boolean[width][height];
-		int threshold = getThreshold(grayTable);
-
-		// init
-		for (int i = 0; i < width; i++) {
-			for (int j = 0; j < height; j++) {
-				if (grayTable[i][j] > threshold) {
-					binaryTable[i][j] = true;
-					// grayTable[i][j] |= 0x00FFFF;
-				} else {
-					binaryTable[i][j] = false;
-					// grayTable[i][j] &= 0xFF0000;
-				}
+		boolean[][] newBinaryTable = new boolean[flagWidth + 1][flagHeight + 1];
+		for (int i = 0; i <= flagWidth; i++) {
+			for (int j = 0; j <= flagHeight; j++) {
+				newBinaryTable[i][j] = binaryTable[flagX + i][flagY + j];
 			}
 		}
+		binaryTable = newBinaryTable;
+		width = flagWidth;
+		height = flagHeight;
 
 		return;
 	}
+
+	// true means shift in width,false means shift in height
+	private int getNumOfWhiteBlock(int x, int y, int shift, boolean flag) {
+		int result = 0;
+		if (flag) {
+			for (int i = x; i <= x + shift; i++) {
+				if (binaryTable[i][y] == true) {
+					result++;
+				}
+			}
+			return result;
+		} else {
+			for (int i = y; i <= y + shift; i++) {
+				if (binaryTable[x][i] == true) {
+					result++;
+				}
+			}
+			return result;
+		}
+	}
+
+	public void modifyBinaryTable() {
+		binaryTable = new boolean[width][height];
+		int threshold = getThreshold(grayTable);
+
+		// init
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (grayTable[i][j] > threshold) {
+					binaryTable[i][j] = true;
+					// grayTable[i][j] |= 0x00FFFF;
+				} else {
+					binaryTable[i][j] = false;
+					// grayTable[i][j] &= 0xFF0000;
+				}
+			}
+		}
+	}
+
+	// public void getStandard() {
+	// ImageResizer a = new ImageResizer(grayTable, height, width,
+	// STANDARD_HEIGHT, STANDARD_WIDTH);
+	// grayTable = a.getImageResizer();
+	// height = STANDARD_HEIGHT;
+	// width = STANDARD_WIDTH;
+	//
+	// binaryTable = new boolean[width][height];
+	// int threshold = getThreshold(grayTable);
+	//
+	// // init
+	// for (int i = 0; i < width; i++) {
+	// for (int j = 0; j < height; j++) {
+	// if (grayTable[i][j] > threshold) {
+	// binaryTable[i][j] = true;
+	// // grayTable[i][j] |= 0x00FFFF;
+	// } else {
+	// binaryTable[i][j] = false;
+	// // grayTable[i][j] &= 0xFF0000;
+	// }
+	// }
+	// }
+	//
+	// return;
+	// }
 
 	public void getBinary() {
 		imageOut(binary());
@@ -141,67 +236,67 @@ public class ImageWorker {
 		}
 
 		// left to right scanning
-//		boolean flag = true;
-//		for (int i = 0; i < width / 2 && flag; i++) {
-//			int signal = 0;
-//			for (int j = 0; j < height; j++) {
-//				if (binaryTable[i][j] == true) {
-//					signal++;
-//				}
-//			}
-//			if (signal <= width / DIVIDER) {
-//				widthFlag++;
-//				widthStart++;
-//			} else {
-//				flag = false;
-//			}
-//		}
+		// boolean flag = true;
+		// for (int i = 0; i < width / 2 && flag; i++) {
+		// int signal = 0;
+		// for (int j = 0; j < height; j++) {
+		// if (binaryTable[i][j] == true) {
+		// signal++;
+		// }
+		// }
+		// if (signal <= width / DIVIDER) {
+		// widthFlag++;
+		// widthStart++;
+		// } else {
+		// flag = false;
+		// }
+		// }
 		// right to left scanning
-//		flag = true;
-//		for (int i = width - 1; i > width / 2 && flag; i--) {
-//			int signal = 0;
-//			for (int j = 0; j < height - heightFlag; j++) {
-//				if (binaryTable[i][j] == true) {
-//					signal++;
-//				}
-//			}
-//			if (signal <= width / DIVIDER) {
-//				widthFlag++;
-//			} else {
-//				flag = false;
-//			}
-//		}
+		// flag = true;
+		// for (int i = width - 1; i > width / 2 && flag; i--) {
+		// int signal = 0;
+		// for (int j = 0; j < height - heightFlag; j++) {
+		// if (binaryTable[i][j] == true) {
+		// signal++;
+		// }
+		// }
+		// if (signal <= width / DIVIDER) {
+		// widthFlag++;
+		// } else {
+		// flag = false;
+		// }
+		// }
 		// top to bottom scanning
-//		flag = true;
-//		for (int i = 0; i < height / 2 && flag; i++) {
-//			int signal = 0;
-//			for (int j = 0; j < width; j++) {
-//				if (binaryTable[j][i] == true) {
-//					signal++;
-//				}
-//			}
-//			if (signal <= height / DIVIDER) {
-//				heightFlag++;
-//				heightStart++;
-//			} else {
-//				flag = false;
-//			}
-//		}
+		// flag = true;
+		// for (int i = 0; i < height / 2 && flag; i++) {
+		// int signal = 0;
+		// for (int j = 0; j < width; j++) {
+		// if (binaryTable[j][i] == true) {
+		// signal++;
+		// }
+		// }
+		// if (signal <= height / DIVIDER) {
+		// heightFlag++;
+		// heightStart++;
+		// } else {
+		// flag = false;
+		// }
+		// }
 		// bottom to top scanning
-//		flag = true;
-//		for (int i = height - 1; i > height / 2 && flag; i--) {
-//			int signal = 0;
-//			for (int j = 0; j < width - widthFlag; j++) {
-//				if (binaryTable[j][i] == true) {
-//					signal++;
-//				}
-//			}
-//			if (signal <= height / DIVIDER) {
-//				heightFlag++;
-//			} else {
-//				flag = false;
-//			}
-//		}
+		// flag = true;
+		// for (int i = height - 1; i > height / 2 && flag; i--) {
+		// int signal = 0;
+		// for (int j = 0; j < width - widthFlag; j++) {
+		// if (binaryTable[j][i] == true) {
+		// signal++;
+		// }
+		// }
+		// if (signal <= height / DIVIDER) {
+		// heightFlag++;
+		// } else {
+		// flag = false;
+		// }
+		// }
 		// new INIT
 		boolean[][] result = new boolean[width - widthFlag][height - heightFlag];
 		for (int i = 0; i < width - widthFlag; i++) {
@@ -218,6 +313,11 @@ public class ImageWorker {
 	private int getThreshold(int[][] grayTable) {
 		int threshold = 0;
 
+		int blackNum = 0;
+		int blackSum = 0;
+		int whiteNum = 0;
+		int whiteSum = 0;
+
 		for (int i = 0; i < width; i++) {
 			for (int j = 0; j < height; j++) {
 				threshold = threshold + grayTable[i][j];
@@ -225,7 +325,36 @@ public class ImageWorker {
 		}
 		threshold = threshold / (width * height);
 		threshold *= 1.15;
-		//正态分布 
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
+				if (grayTable[i][j] > threshold) {
+					whiteNum++;
+					whiteSum += grayTable[i][j];
+				} else {
+					blackNum++;
+					blackSum += grayTable[i][j];
+				}
+			}
+		}
+		// 正态分布
+		while (threshold != (blackSum / blackNum + whiteSum / whiteNum) / 2) {
+			threshold = (blackSum / blackNum + whiteSum / whiteNum) / 2;
+			blackNum = 0;
+			blackSum = 0;
+			whiteNum = 0;
+			whiteSum = 0;
+			for (int i = 0; i < width; i++) {
+				for (int j = 0; j < height; j++) {
+					if (grayTable[i][j] > threshold) {
+						whiteNum++;
+						whiteSum += grayTable[i][j];
+					} else {
+						blackNum++;
+						blackSum += grayTable[i][j];
+					}
+				}
+			}
+		}
 
 		return threshold;
 	}
@@ -243,45 +372,45 @@ public class ImageWorker {
 				}
 			}
 		}
-//		Image result = binaryImage.getScaledInstance(STANDARD_WIDTH,
-//				STANDARD_HEIGHT, Image.SCALE_REPLICATE);
-//
-//		BufferedImage bi = new BufferedImage(STANDARD_WIDTH, STANDARD_HEIGHT,
-//				BufferedImage.TYPE_INT_RGB);
-//		Graphics2D biContext = bi.createGraphics();
-//		biContext.drawImage(result, 0, 0, null);
-//		height = STANDARD_HEIGHT;
-//		width = STANDARD_WIDTH;
-//		return bi;
-		 return binaryImage;
+		// Image result = binaryImage.getScaledInstance(STANDARD_WIDTH,
+		// STANDARD_HEIGHT, Image.SCALE_REPLICATE);
+		//
+		// BufferedImage bi = new BufferedImage(STANDARD_WIDTH, STANDARD_HEIGHT,
+		// BufferedImage.TYPE_INT_RGB);
+		// Graphics2D biContext = bi.createGraphics();
+		// biContext.drawImage(result, 0, 0, null);
+		// height = STANDARD_HEIGHT;
+		// width = STANDARD_WIDTH;
+		// return bi;
+		return binaryImage;
 	}
 
 	// 二值化
-		public BufferedImage binary(boolean[][] binaryTable,int width,int height) {
-			BufferedImage binaryImage = new BufferedImage(width, height,
-					BufferedImage.TYPE_BYTE_BINARY);
-			for (int i = 0; i < height; i++) {
-				for (int j = 0; j < width; j++) {
-					if (binaryTable[j][i]) {
-						binaryImage.setRGB(j, i, Color.white.getRGB());
-					} else {
-						binaryImage.setRGB(j, i, Color.BLACK.getRGB());
-					}
+	public BufferedImage binary(boolean[][] binaryTable, int width, int height) {
+		BufferedImage binaryImage = new BufferedImage(width, height,
+				BufferedImage.TYPE_BYTE_BINARY);
+		for (int i = 0; i < height; i++) {
+			for (int j = 0; j < width; j++) {
+				if (binaryTable[j][i]) {
+					binaryImage.setRGB(j, i, Color.white.getRGB());
+				} else {
+					binaryImage.setRGB(j, i, Color.BLACK.getRGB());
 				}
 			}
-//			Image result = binaryImage.getScaledInstance(STANDARD_WIDTH,
-//					STANDARD_HEIGHT, Image.SCALE_REPLICATE);
-	//
-//			BufferedImage bi = new BufferedImage(STANDARD_WIDTH, STANDARD_HEIGHT,
-//					BufferedImage.TYPE_INT_RGB);
-//			Graphics2D biContext = bi.createGraphics();
-//			biContext.drawImage(result, 0, 0, null);
-//			height = STANDARD_HEIGHT;
-//			width = STANDARD_WIDTH;
-//			return bi;
-			 return binaryImage;
 		}
-		
+		// Image result = binaryImage.getScaledInstance(STANDARD_WIDTH,
+		// STANDARD_HEIGHT, Image.SCALE_REPLICATE);
+		//
+		// BufferedImage bi = new BufferedImage(STANDARD_WIDTH, STANDARD_HEIGHT,
+		// BufferedImage.TYPE_INT_RGB);
+		// Graphics2D biContext = bi.createGraphics();
+		// biContext.drawImage(result, 0, 0, null);
+		// height = STANDARD_HEIGHT;
+		// width = STANDARD_WIDTH;
+		// return bi;
+		return binaryImage;
+	}
+
 	public void imageOut(BufferedImage binaryImage) {
 		try {
 			String dir = "BinaryImage//" + fileName;
@@ -291,10 +420,10 @@ public class ImageWorker {
 		}
 		return;
 	}
-	
-	public void imageOut(BufferedImage binaryImage,String route) {
+
+	public void imageOut(BufferedImage binaryImage, String route) {
 		try {
-			String dir = route+"//" + fileName;
+			String dir = route + "//" + fileName;
 			ImageIO.write(binaryImage, "jpg", new File(dir));
 		} catch (IOException e) {
 			e.printStackTrace();

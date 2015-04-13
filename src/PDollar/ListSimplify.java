@@ -8,6 +8,11 @@ public class ListSimplify {
 
 		int length = before.size();
 		for (int i = 0; i < length - 2;) {
+//			if(before.get(i).ID!=before.get(i+1).ID && before.get(i+1).ID!=before.get(i+2).ID){
+//				before.remove(i+1);
+//				length--;
+//				continue;
+//			}
 			if (before.get(i + 1).ID == before.get(i).ID
 					&& before.get(i + 1).ID == before.get(i + 2).ID) {
 				if (Point.inOneLine(before.get(i), before.get(i + 1),
@@ -19,6 +24,8 @@ public class ListSimplify {
 			}
 			i++;
 		}
+		
+		
 
 		return before;
 	}

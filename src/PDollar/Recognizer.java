@@ -11,6 +11,8 @@ public class Recognizer {
 		GraphDrawer drawer = new GraphDrawer(a.getBinaryTable(), a.getWidth(),
 				a.getHeight());
 		ArrayList<Point> pointList = drawer.getPointList();
+		
+		
 		PDollarRecognizer apd = new PDollarRecognizer();
 		RecognizerResults result = apd.Recognize(pointList);
 		return result;

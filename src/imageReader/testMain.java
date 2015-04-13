@@ -2,23 +2,36 @@ package imageReader;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.HashSet;
 
 import PDollar.*;
 
 public class testMain {
 	public static void main(String[] args) {
 
+		
 		 File file = new File("testDemo\\");
-//		File file = new File("StandardDatabase\\handbreak.png");
 		batchTest(file);
+		
+//		File testFile = new File("testDemo\\XYtest.png");
+//		WorkedImage a = new WorkedImage(testFile);
+//		boolean[][] result = a.getBinaryTable();
+//		for(int i=0;i<a.getWidth();i++){
+//			for(int j=0;j<a.getHeight();j++){
+//			    System.out.print(" "+ result[i][j] + ",");
+//			}
+//			System.out.println();
+//		}
+		
+		
 
 		// File testFile = new File("testDemo\\QQ½ØÍ¼20150306152132.jpg");
 		// singleTest(testFile);
 
 //		 WorkedImage a = new WorkedImage(new
-//		 File("StandardDatabase\\ABS-1.png"));
-//		 testTool.getBorder(new File("StandardDatabase\\ABS-1.png"));
-//		 testTool.borderOut(new File("StandardDatabase\\ABS-1.png"));
+//		 File("StandardDatabase\\ABS-2.png"));
+//		 testTool.getBorder(new File("StandardDatabase\\ABS-2.png"));
+//		 testTool.borderOut(new File("StandardDatabase\\ABS-2.png"));
 	}
 
 	public static void singleTest(File testFile) {
@@ -36,7 +49,7 @@ public class testMain {
 		testTool.binaryOut(testFile);
 		RecognizerResults result = Recognizer.getResult(testFile);
 
-		if (result.mName.startsWith(testFile.getName().split("-")[0])) {
+		if (result.mName.startsWith(testFile.getName().split("[-,.]")[0])) {
 			return true;
 		}
 		System.out.println("\t" + testFile.getName() + "\t"
@@ -64,6 +77,7 @@ public class testMain {
 		}
 
 
+		System.out.println("tested "+(passFlag+failFlag)+" demo,"+passFlag+" passed");
 		System.out.println("pass rate:" + ((double) passFlag)
 				/ (passFlag + failFlag));
 	}

@@ -17,10 +17,13 @@ public class GraphDrawer {
 		this.height = height;
 		routeStack = new Stack<Point>();
 		pointList = new ArrayList<Point>();
+		
+		
 		findBorder();
 		
 	}
 	
+
 	public ArrayList<Point> getPointList(){
 		getStroke();
 		pointList = ListSimplify.simplify(pointList);

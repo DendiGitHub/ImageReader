@@ -2,11 +2,14 @@ package imageReader;
 
 import java.io.File;
 
+import PDollar.Point;
+
 public class WorkedImage {
 	
 	
 	private int height;
 	private int width;
+	private Point center;
 	private boolean[][] binaryTable;
 	 
 	public WorkedImage(File imageFile){
