@@ -19,6 +19,7 @@ public class ImageWorker {
 	// to be determined;
 	// static int STANDARD_HEIGHT = 50;
 	// static int STANDARD_WIDTH = 50;
+	static int blackBorderWidth = 3;
 	static int BLUE_WEIGH = 29;
 	static int GREEN_WEIGH = 77;
 	static int RED_WEIGH = 150;
@@ -64,7 +65,7 @@ public class ImageWorker {
 		int flagWidth = 1;
 		int flagHeight = 1;
 
-		boolean doubleFlag = false;
+		int doubleFlag = 0;
 		boolean whileFlag = true;
 		boolean isEmptyFlag = true;
 		while (whileFlag) {
@@ -75,7 +76,7 @@ public class ImageWorker {
 				flagHeight++;
 				whileFlag = true;
 			}
-			if (flagX + flagHeight < height - 1
+			if (flagY + flagHeight < height - 1
 					&& getNumOfWhiteBlock(flagX, flagY + flagHeight, flagWidth,
 							true) > 0) {
 				flagHeight++;
@@ -87,7 +88,7 @@ public class ImageWorker {
 				flagWidth++;
 				whileFlag = true;
 			}
-			if (flagY + flagWidth < width - 1
+			if (flagX + flagWidth < width - 1
 					&& getNumOfWhiteBlock(flagX + flagWidth, flagY, flagHeight,
 							false) > 0) {
 				flagWidth++;
@@ -102,15 +103,15 @@ public class ImageWorker {
 					flagY--;
 					whileFlag = true;
 					continue;
-				} else if (doubleFlag==false) {
-					doubleFlag = true;
+				} else if (doubleFlag!=blackBorderWidth-1) {
+					doubleFlag++;
 					whileFlag = true;
 				} else {
 					break;
 				}
 			} else {
 				isEmptyFlag = false;
-				doubleFlag = false;
+				doubleFlag = 0;
 			}
 		}
 
@@ -121,8 +122,8 @@ public class ImageWorker {
 			}
 		}
 		binaryTable = newBinaryTable;
-		width = flagWidth;
-		height = flagHeight;
+		width = flagWidth+1;
+		height = flagHeight+1;
 
 		return;
 	}
@@ -217,14 +218,14 @@ public class ImageWorker {
 	private boolean[][] initBinaryTable() {
 		boolean[][] binaryTable = new boolean[width][height];
 		int threshold = getThreshold(grayTable);
-		int heightFlag = 0;
-		int heightStart = 0;
-		int widthFlag = 0;
-		int widthStart = 0;
+//		int heightFlag = 0;
+//		int heightStart = 0;
+//		int widthFlag = 0;
+//		int widthStart = 0;
 
 		// init
-		for (int i = widthStart; i < width; i++) {
-			for (int j = heightStart; j < height; j++) {
+		for (int i = 0; i < width; i++) {
+			for (int j = 0; j < height; j++) {
 				if (grayTable[i][j] > threshold) {
 					binaryTable[i][j] = true;
 					// grayTable[i][j] |= 0x00FFFF;
@@ -298,15 +299,15 @@ public class ImageWorker {
 		// }
 		// }
 		// new INIT
-		boolean[][] result = new boolean[width - widthFlag][height - heightFlag];
-		for (int i = 0; i < width - widthFlag; i++) {
-			for (int j = 0; j < height - heightFlag; j++) {
-				result[i][j] = binaryTable[i + widthStart][j + heightStart];
-			}
-		}
-		height = height - heightFlag;
-		width = width - widthFlag;
-		return result;
+//		boolean[][] result = new boolean[width - widthFlag][height - heightFlag];
+//		for (int i = 0; i < width - widthFlag; i++) {
+//			for (int j = 0; j < height - heightFlag; j++) {
+//				result[i][j] = binaryTable[i + widthStart][j + heightStart];
+//			}
+//		}
+//		height = height - heightFlag;
+//		width = width - widthFlag;
+		return binaryTable;
 	}
 
 	// getThreshold

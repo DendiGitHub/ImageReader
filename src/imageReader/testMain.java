@@ -1,38 +1,81 @@
 package imageReader;
 
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashSet;
+
+import javax.imageio.ImageIO;
 
 import PDollar.*;
 
 public class testMain {
 	public static void main(String[] args) {
 
-		long a = System.currentTimeMillis();
-		 File file = new File("testDemo\\");
-		batchTest(file);
-		System.out.println("Time : "+(System.currentTimeMillis()-a));
-		
-//		File testFile = new File("testDemo\\XYtest.png");
-//		WorkedImage a = new WorkedImage(testFile);
-//		boolean[][] result = a.getBinaryTable();
-//		for(int i=0;i<a.getWidth();i++){
-//			for(int j=0;j<a.getHeight();j++){
-//			    System.out.print(" "+ result[i][j] + ",");
-//			}
+//		for (int i = 0; i < 30; i++) {
+//			System.out.println("Angle is "+ i +"degree");
+//			File file = new File("testDemo\\");
+//			batchRotate(file, i);
+//
+//			long a = System.currentTimeMillis();
+//			file = new File("rotateDemo\\");
+//			batchTest(file);
+//			System.out.println("Time : " + (System.currentTimeMillis() - a)
+//					+ "ms");
 //			System.out.println();
 //		}
 		
 		
+		
+		long a = System.currentTimeMillis();
+		File file = new File("testDemo\\");
+		batchTest(file);
+		
+		
+//		System.out.println("Time : " + (System.currentTimeMillis() - a)
+//				+ "ms");
+		
+		// File testFile = new File("testDemo\\XYtest.png");
+		// WorkedImage a = new WorkedImage(testFile);
+		// boolean[][] result = a.getBinaryTable();
+		// for(int i=0;i<a.getWidth();i++){
+		// for(int j=0;j<a.getHeight();j++){
+		// System.out.print(" "+ result[i][j] + ",");
+		// }
+		// System.out.println();
+		// }
 
 		// File testFile = new File("testDemo\\QQ½ØÍ¼20150306152132.jpg");
 		// singleTest(testFile);
 
-//		 WorkedImage a = new WorkedImage(new
-//		 File("StandardDatabase\\ABS-2.png"));
-//		 testTool.getBorder(new File("StandardDatabase\\ABS-2.png"));
-//		 testTool.borderOut(new File("StandardDatabase\\ABS-2.png"));
+		// WorkedImage a = new WorkedImage(new
+		// File("StandardDatabase\\ABS-2.png"));
+		// testTool.getBorder(new File("StandardDatabase\\ABS-2.png"));
+		// testTool.borderOut(new File("StandardDatabase\\ABS-2.png"));
+	}
+
+	public static void singleRotate(File testFile, int angle) {
+		BufferedImage src;
+		try {
+			src = ImageIO.read(testFile);
+			BufferedImage des = ImageRotate.Rotate(src, angle);
+			ImageIO.write(des, "jpg",
+					new File("rotateDemo\\" + testFile.getName()));
+		} catch (IOException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	public static void batchRotate(File file, int angle) {
+		ArrayList<File> result = new ArrayList<File>();
+		result = getFiles(file, result);
+
+		for (int i = 0; i < result.size(); i++) {
+			singleRotate(result.get(i), angle);
+		}
+
 	}
 
 	public static void singleTest(File testFile) {
@@ -77,8 +120,8 @@ public class testMain {
 			}
 		}
 
-
-		System.out.println("tested "+(passFlag+failFlag)+" demo,"+passFlag+" passed");
+		System.out.println("tested " + (passFlag + failFlag) + " demo,"
+				+ passFlag + " passed");
 		System.out.println("pass rate:" + ((double) passFlag)
 				/ (passFlag + failFlag));
 	}
