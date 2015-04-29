@@ -21,8 +21,8 @@ public class testMain {
 //			long a = System.currentTimeMillis();
 //			file = new File("rotateDemo\\");
 //			batchTest(file);
-//			System.out.println("Time : " + (System.currentTimeMillis() - a)
-//					+ "ms");
+////			System.out.println("Time : " + (System.currentTimeMillis() - a)
+////					+ "ms");
 //			System.out.println();
 //		}
 		

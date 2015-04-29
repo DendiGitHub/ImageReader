@@ -19,7 +19,7 @@ public class ImageWorker {
 	// to be determined;
 	// static int STANDARD_HEIGHT = 50;
 	// static int STANDARD_WIDTH = 50;
-	static int blackBorderWidth = 3;
+	static int blackBorderWidth = 4;
 	static int BLUE_WEIGH = 29;
 	static int GREEN_WEIGH = 77;
 	static int RED_WEIGH = 150;
@@ -58,6 +58,7 @@ public class ImageWorker {
 			e.printStackTrace();
 		}
 	}
+	
 
 	private void catchImage() {
 		int flagX = width / 2;
