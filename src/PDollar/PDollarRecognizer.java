@@ -2,7 +2,13 @@ package PDollar;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.awt.Color;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.lang.Double;
+
+import javax.imageio.ImageIO;
 
 //
 // PDollarRecognizer class constants
@@ -22,7 +28,24 @@ public class PDollarRecognizer {
 		points = Resample(points, mNumPoints);
 		points = Scale(points);
 		points = TranslateTo(points, mPointOrig);
-
+//begin
+//		BufferedImage binaryImage = new BufferedImage(200, 200,
+//				BufferedImage.TYPE_BYTE_BINARY);
+//		for (int i = 0; i < 200; i++) {
+//			for (int j = 0; j < 200; j++) {
+//					binaryImage.setRGB(j, i, Color.BLACK.getRGB());
+//			}
+//		}
+//		for(int i=0;i<points.size();i++){
+//			binaryImage.setRGB((int)((points.get(i).X+1)*50), (int)((points.get(i).Y+1)*50), Color.WHITE.getRGB());
+//		}
+//		try {
+//			String dir = "BinaryImage//" + "aaaa.jpg";
+//			ImageIO.write(binaryImage, "jpg", new File(dir));
+//		} catch (IOException e) {
+//			e.printStackTrace();
+//		}
+//end
 		double score = Double.POSITIVE_INFINITY;
 		for (int i = 0; i < mPntClouds.size(); i++) // for each point-cloud
 													// template

@@ -13,23 +13,10 @@ import PDollar.*;
 public class testMain {
 	public static void main(String[] args) {
 
-//		for (int i = 0; i < 30; i++) {
-//			System.out.println("Angle is "+ i +"degree");
-//			File file = new File("testDemo\\");
-//			batchRotate(file, i);
-//
-//			long a = System.currentTimeMillis();
-//			file = new File("rotateDemo\\");
-//			batchTest(file);
-////			System.out.println("Time : " + (System.currentTimeMillis() - a)
-////					+ "ms");
-//			System.out.println();
-//		}
-		
-		
-		
 		long a = System.currentTimeMillis();
-		File file = new File("testDemo\\");
+		File file = new File("testDemo");
+//		File file = new File("testDemo//engine");
+//		file = new File("StandardDatabase//airBag.png");
 		batchTest(file);
 		
 		

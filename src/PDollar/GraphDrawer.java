@@ -19,7 +19,7 @@ public class GraphDrawer {
 		pointList = new ArrayList<Point>();
 		
 		
-		findBorder();
+		border = findBorder();
 		
 	}
 	
@@ -32,7 +32,7 @@ public class GraphDrawer {
 
 
 	//get border stored in boolean[][] border
-	public void findBorder() {
+	public boolean[][] findBorder() {
 		// add border
 		border = new boolean[width][height];
 		//boundary
@@ -66,6 +66,7 @@ public class GraphDrawer {
 				}
 			}
 		}
+		return border;
 	}
 
 	

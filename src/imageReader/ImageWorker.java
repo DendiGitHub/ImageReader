@@ -7,7 +7,6 @@ import java.io.IOException;
 
 import javax.imageio.ImageIO;
 
-import PDollar.Point;
 
 /*	Author :Dendi
  * 	Email  :CoderDendi@163.com
@@ -19,7 +18,6 @@ public class ImageWorker {
 	// to be determined;
 	// static int STANDARD_HEIGHT = 50;
 	// static int STANDARD_WIDTH = 50;
-	static int blackBorderWidth = 4;
 	static int BLUE_WEIGH = 29;
 	static int GREEN_WEIGH = 77;
 	static int RED_WEIGH = 150;
@@ -61,6 +59,7 @@ public class ImageWorker {
 	
 
 	private void catchImage() {
+		int blackBorderWidth = 10;
 		int flagX = width / 2;
 		int flagY = height / 2;
 		int flagWidth = 1;
@@ -95,9 +94,14 @@ public class ImageWorker {
 				flagWidth++;
 				whileFlag = true;
 			}
-			// do none of the above
+			// catch the image by the 1st time
+			if(whileFlag&&isEmptyFlag){
+				isEmptyFlag = false;
+			}
+			//do not catch the image
 			if (whileFlag==false) {
-				if (isEmptyFlag==true) {
+				//empty
+				if (isEmptyFlag) {
 					flagWidth += 2;
 					flagHeight += 2;
 					flagX--;
@@ -107,6 +111,7 @@ public class ImageWorker {
 				} else if (doubleFlag!=blackBorderWidth-1) {
 					doubleFlag++;
 					whileFlag = true;
+					continue;
 				} else {
 					break;
 				}
